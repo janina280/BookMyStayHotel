@@ -36,7 +36,7 @@ class BookingQueryServiceTest {
         booking.setBookingConfirmationCode("ABC123");
     }
 
-    // ----- getBookingById tests -----
+    //  getBookingById tests
     @Test
     void getBookingById_success() {
         when(bookingRepository.findById(1L)).thenReturn(Optional.of(booking));
@@ -58,7 +58,7 @@ class BookingQueryServiceTest {
         assertEquals("Booking not found", response.getMessage());
     }
 
-    // ----- findBookingByConfirmationCode tests -----
+    //  findBookingByConfirmationCode tests
     @Test
     void findBookingByConfirmationCode_success() {
         when(bookingRepository.findByBookingConfirmationCode("ABC123")).thenReturn(Optional.of(booking));
@@ -80,7 +80,7 @@ class BookingQueryServiceTest {
         assertEquals("Booking not found", response.getMessage());
     }
 
-    // ----- getAllBookings tests -----
+    //  getAllBookings tests
     @Test
     void getAllBookings_success() {
         List<Booking> bookings = new ArrayList<>();

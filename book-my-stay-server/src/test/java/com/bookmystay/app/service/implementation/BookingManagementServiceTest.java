@@ -58,7 +58,7 @@ class BookingManagementServiceTest {
         user.setId(1L);
     }
 
-    // ----- saveBooking tests -----
+    // saveBooking tests
     @Test
     void saveBooking_success() {
         when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
@@ -124,7 +124,7 @@ class BookingManagementServiceTest {
         verify(bookingRepository, never()).save(any());
     }
 
-    // ----- cancelBooking tests -----
+    //  cancelBooking tests
     @Test
     void cancelBooking_success() {
         when(bookingRepository.findById(1L)).thenReturn(Optional.of(booking));

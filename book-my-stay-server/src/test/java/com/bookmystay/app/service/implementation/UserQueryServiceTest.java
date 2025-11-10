@@ -30,7 +30,7 @@ class UserQueryServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    // ----- getAllUsers tests -----
+    // getAllUsers tests
     @Test
     void getAllUsers_success() {
         User user = new User();
@@ -56,7 +56,7 @@ class UserQueryServiceTest {
         assertTrue(response.getMessage().contains("Error fetching users"));
     }
 
-    // ----- getUserById tests -----
+    // getUserById tests
 
 
     @Test
@@ -89,7 +89,7 @@ class UserQueryServiceTest {
         assertEquals("User not found!", response.getMessage());
     }
 
-    // ----- deleteUser tests -----
+    //  deleteUser tests
     @Test
     void deleteUser_success() {
         User user = new User();

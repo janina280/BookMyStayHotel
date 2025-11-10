@@ -28,8 +28,6 @@ public class JWTUtils {
         key = Keys.hmacShaKeyFor(secretString.getBytes(StandardCharsets.UTF_8));
     }
 
-
-    // Generează token pentru un user
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
@@ -39,23 +37,18 @@ public class JWTUtils {
                 .compact();
     }
 
-    // Extrage username (subject) din token
     public String extractUsername(String token) {
         return extractClaims(token).getSubject();
     }
 
-    // Verifică dacă token-ul e valid pentru un user
     public boolean isTokenValid(String token, UserDetails userDetails) {
         String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
-
-    // Verifică dacă token-ul a expirat
     private boolean isTokenExpired(String token) {
         return extractClaims(token).getExpiration().before(new Date());
     }
 
-    // Extrage Claims din token
     private Claims extractClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(key)

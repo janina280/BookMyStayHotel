@@ -33,7 +33,7 @@ class RoomManagementServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    // ----- addNewRoom tests -----
+    //  addNewRoom tests
     @Test
     void addNewRoom_success() {
         MultipartFile photo = mock(MultipartFile.class);
@@ -62,7 +62,7 @@ class RoomManagementServiceTest {
         assertTrue(response.getMessage().contains("Error adding new room"));
     }
 
-    // ----- updateRoom tests -----
+    //  updateRoom tests
     @Test
     void updateRoom_success_withNewPhoto() {
         MultipartFile photo = mock(MultipartFile.class);
@@ -93,7 +93,7 @@ class RoomManagementServiceTest {
         assertEquals("Room not found!", response.getMessage());
     }
 
-    // ----- deleteRoom tests -----
+    // deleteRoom tests
     @Test
     void deleteRoom_success() {
         Room room = new Room();

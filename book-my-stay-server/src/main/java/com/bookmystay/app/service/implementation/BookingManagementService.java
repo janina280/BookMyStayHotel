@@ -82,7 +82,6 @@ public class BookingManagementService {
         });
     }
 
-    // ----- PRIVATE HELPERS -----
     private Booking getBookingOrThrow(Long bookingId) {
         return bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new OurException(BOOKING_NOT_FOUND));

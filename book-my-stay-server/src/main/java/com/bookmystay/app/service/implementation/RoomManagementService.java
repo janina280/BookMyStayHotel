@@ -16,7 +16,6 @@ public class RoomManagementService {
 
     private final RoomRepository roomRepository;
     private final AwsS3Service awsS3Service;
-
     private static final String SUCCESS = "successful";
     private static final String ROOM_NOT_FOUND = "Room not found!";
 

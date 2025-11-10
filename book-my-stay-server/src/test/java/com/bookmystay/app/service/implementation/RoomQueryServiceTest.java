@@ -30,7 +30,7 @@ class RoomQueryServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    // ----- getAllRooms tests -----
+    //  getAllRooms tests
     @Test
     void getAllRooms_success() {
         Room room = new Room();
@@ -56,7 +56,7 @@ class RoomQueryServiceTest {
         assertTrue(response.getMessage().contains("Error getting all rooms"));
     }
 
-    // ----- getAllRoomTypes tests -----
+    // getAllRoomTypes tests
     @Test
     void getAllRoomTypes_success() {
         when(roomRepository.findDistinctRoomTypes()).thenReturn(List.of("Single", "Double"));
@@ -68,7 +68,7 @@ class RoomQueryServiceTest {
         verify(roomRepository, times(1)).findDistinctRoomTypes();
     }
 
-    // ----- getRoomById tests -----
+    //getRoomById tests
     @Test
     void getRoomById_success() {
         Room room = new Room();
@@ -102,7 +102,7 @@ class RoomQueryServiceTest {
         assertTrue(response.getMessage().contains("Error getting room by id"));
     }
 
-    // ----- getAllAvailableRooms tests -----
+    //  getAllAvailableRooms tests
     @Test
     void getAllAvailableRooms_success() {
         Room room = new Room();
@@ -125,7 +125,7 @@ class RoomQueryServiceTest {
         assertTrue(response.getMessage().contains("Error getting all available rooms"));
     }
 
-    // ----- getAvailableRoomsByDataAndType tests -----
+    // getAvailableRoomsByDataAndType tests
     @Test
     void getAvailableRoomsByDataAndType_success() {
         Room room = new Room();
