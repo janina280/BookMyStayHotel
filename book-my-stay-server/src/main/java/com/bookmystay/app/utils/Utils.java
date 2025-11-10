@@ -10,9 +10,12 @@ import com.bookmystay.app.entity.User;
 
 import java.security.SecureRandom;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Utils {
+    private Utils() {
+        // private constructor to prevent instantiation
+    }
+
     private  static final String ALPHANUMERIC_STRING="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final SecureRandom secureRandom=new SecureRandom();
     public static String generateRandomConfirmationCode(int length){
@@ -49,12 +52,13 @@ public class Utils {
                     user.getBookings().stream()
                             .filter(booking -> booking != null && booking.getRoom() != null)
                             .map(booking -> mapBookingEntityToBookingDTOPlusBookedRooms(booking, false))
-                            .collect(Collectors.toList())
+                            .toList()
             );
         }
 
         return userDTO;
     }
+
 
     public static RoomDTO mapRoomEntityToRoomDTO(Room room) {
         RoomDTO roomDTO= new RoomDTO();
@@ -69,19 +73,25 @@ public class Utils {
     }
 
     public static RoomDTO mapRoomEntityToRoomDTOPlusBookings(Room room) {
-        RoomDTO roomDTO= new RoomDTO();
+        RoomDTO roomDTO = new RoomDTO();
 
         roomDTO.setId(room.getId());
         roomDTO.setRoomDescription(room.getRoomDescription());
         roomDTO.setRoomType(room.getRoomType());
         roomDTO.setRoomPrice(room.getRoomPrice());
         roomDTO.setRoomPhotoUrl(room.getRoomPhotoUrl());
-        if(room.getBookings()!=null){
-            roomDTO.setBookings(room.getBookings().stream().map(Utils::mapBookingEntityToBookingDTO).collect(Collectors.toList()));
+
+        if (room.getBookings() != null) {
+            roomDTO.setBookings(
+                    room.getBookings().stream()
+                            .map(Utils::mapBookingEntityToBookingDTO)
+                            .toList()
+            );
         }
 
-        return  roomDTO;
+        return roomDTO;
     }
+
 
     public static BookingDTO mapBookingEntityToBookingDTO (Booking booking){
         BookingDTO bookingDTO=new BookingDTO();
@@ -124,14 +134,21 @@ public class Utils {
 
 
     public static List<UserDTO> mapUserListEntityToUserDTO(List<User> userList){
-        return userList.stream().map(Utils::mapUserEntityToUserDTO).collect(Collectors.toList());
+        return userList.stream()
+                .map(Utils::mapUserEntityToUserDTO)
+                .toList();
     }
 
     public static List<RoomDTO> mapRoomListEntityToRoomDTO(List<Room> roomList){
-        return roomList.stream().map(Utils::mapRoomEntityToRoomDTO).collect(Collectors.toList());
+        return roomList.stream()
+                .map(Utils::mapRoomEntityToRoomDTO)
+                .toList();
     }
 
     public static List<BookingDTO> mapBookingListEntityToBookingDTO(List<Booking> bookingList){
-        return bookingList.stream().map(Utils::mapBookingEntityToBookingDTO).collect(Collectors.toList());
+        return bookingList.stream()
+                .map(Utils::mapBookingEntityToBookingDTO)
+                .toList();
     }
+
 }

@@ -15,17 +15,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/rooms")
 public class RoomController {
+
     private final IRoomService roomService;
 
     public RoomController(IRoomService roomService) {
         this.roomService = roomService;
-
     }
 
     @GetMapping("/all")
     public ResponseEntity<Response> getAllRooms() {
-        Response response = roomService.getAllRooms();
-        return ResponseEntity.status(response.getStatusCode()).body(response);
+        return buildResponse(roomService.getAllRooms());
     }
 
     @GetMapping("/types")
@@ -40,28 +39,20 @@ public class RoomController {
                                                @RequestParam(value = "roomPrice", required = false) BigDecimal roomPrice,
                                                @RequestParam(value = "roomDescription", required = false) String description) {
 
-        if (photo == null || photo.isEmpty() || roomType == null || roomType.isBlank() || roomPrice == null) {
-            Response response = new Response();
-            response.setStatusCode(400);
-            response.setMessage("Please provide values for all fields(photo, roomType, roomPrice!");
-            return ResponseEntity.status(response.getStatusCode()).body(response);
-        }
-        Response response = roomService.addNewRoom(photo, roomType, roomPrice, description);
-        return ResponseEntity.status(response.getStatusCode()).body(response);
+        Response invalidResponse = validateRoomData(photo, roomType, roomPrice);
+        if (invalidResponse != null) return buildResponse(invalidResponse);
 
+        return buildResponse(roomService.addNewRoom(photo, roomType, roomPrice, description));
     }
 
     @GetMapping("/room-by-id/{roomId}")
-    public ResponseEntity<Response> getRoomById(@PathVariable("roomId") Long roomId) {
-        Response response = roomService.getRoomById(roomId);
-        return ResponseEntity.status(response.getStatusCode()).body(response);
-
+    public ResponseEntity<Response> getRoomById(@PathVariable Long roomId) {
+        return buildResponse(roomService.getRoomById(roomId));
     }
 
     @GetMapping("/all-available-rooms")
     public ResponseEntity<Response> getAllAvailableRooms() {
-        Response response = roomService.getAllAvailableRooms();
-        return ResponseEntity.status(response.getStatusCode()).body(response);
+        return buildResponse(roomService.getAllAvailableRooms());
     }
 
     @GetMapping("/available-rooms-by-date-and-type")
@@ -69,34 +60,52 @@ public class RoomController {
                                                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
                                                                   @RequestParam(required = false) String roomType) {
 
-        if (checkInDate == null || roomType == null || roomType.isBlank() || checkOutDate == null) {
-            Response response = new Response();
-            response.setStatusCode(400);
-            response.setMessage("Please provide values for all fields(checkInDate, roomType, checkOutDat");
-            return ResponseEntity.status(response.getStatusCode()).body(response);
-        }
-        Response response = roomService.getAvailableRoomsByDataAndType(checkInDate, checkOutDate, roomType);
-        return ResponseEntity.status(response.getStatusCode()).body(response);
+        Response invalidResponse = validateAvailabilityParams(checkInDate, checkOutDate, roomType);
+        if (invalidResponse != null) return buildResponse(invalidResponse);
 
+        return buildResponse(roomService.getAvailableRoomsByDataAndType(checkInDate, checkOutDate, roomType));
     }
 
     @PutMapping("/update/{roomId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response> updateRoom(@PathVariable Long roomId,
                                                @RequestParam(value = "photo", required = false) MultipartFile photo,
-                                               @RequestParam(value = "rommType", required = false) String roomType,
+                                               @RequestParam(value = "roomType", required = false) String roomType,
                                                @RequestParam(value = "roomPrice", required = false) BigDecimal roomPrice,
                                                @RequestParam(value = "roomDescription", required = false) String description) {
-        Response response = roomService.updateRoom(roomId, description, roomType, roomPrice, photo);
-        return ResponseEntity.status(response.getStatusCode()).body(response);
 
+        return buildResponse(roomService.updateRoom(roomId, description, roomType, roomPrice, photo));
     }
 
     @DeleteMapping("/deleteRoom/{roomId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Response> deleteRoom(@PathVariable ("roomId") Long roomId){
-        Response response=roomService.deleteRoom(roomId);
-        return  ResponseEntity.status(response.getStatusCode()).body(response);
+    public ResponseEntity<Response> deleteRoom(@PathVariable Long roomId) {
+        return buildResponse(roomService.deleteRoom(roomId));
+    }
 
+    // ---- HELPER METHODS ----
+
+    private ResponseEntity<Response> buildResponse(Response response) {
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    private Response validateRoomData(MultipartFile photo, String roomType, BigDecimal roomPrice) {
+        if (photo == null || photo.isEmpty() || roomType == null || roomType.isBlank() || roomPrice == null) {
+            Response response = new Response();
+            response.setStatusCode(400);
+            response.setMessage("Please provide values for all fields (photo, roomType, roomPrice)!");
+            return response;
+        }
+        return null;
+    }
+
+    private Response validateAvailabilityParams(LocalDate checkInDate, LocalDate checkOutDate, String roomType) {
+        if (checkInDate == null || checkOutDate == null || roomType == null || roomType.isBlank()) {
+            Response response = new Response();
+            response.setStatusCode(400);
+            response.setMessage("Please provide values for all fields (checkInDate, checkOutDate, roomType)!");
+            return response;
+        }
+        return null;
     }
 }
