@@ -83,6 +83,12 @@ public class RoomController {
         return buildResponse(roomService.deleteRoom(roomId));
     }
 
+    @PutMapping("/room/{id}/rate")
+    public ResponseEntity<Response> rateRoom(@PathVariable Long id, @RequestParam int rating) {
+        return buildResponse(roomService.rateRoom(id,rating));
+    }
+
+
     // ---- HELPER METHODS ----
 
     private ResponseEntity<Response> buildResponse(Response response) {

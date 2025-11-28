@@ -6,18 +6,17 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
+import java.time.Instant;
 
 @Service
 public class JWTUtils {
 
-    private static final long EXPIRATION_TIME = (long) 1000 * 60 * 60 * 24 * 7; // 7 zile
+    private static final long EXPIRATION_MS = 1000L * 60 * 60 * 24 * 7; // 7 zile
     private SecretKey key;
 
     @Value("${jwt.secret}")
@@ -29,10 +28,13 @@ public class JWTUtils {
     }
 
     public String generateToken(UserDetails userDetails) {
+        Instant now = Instant.now();
+        Instant exp = now.plusMillis(EXPIRATION_MS);
+
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .claim("iat", now.getEpochSecond())
+                .claim("exp", exp.getEpochSecond())
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -45,8 +47,11 @@ public class JWTUtils {
         String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
+
     private boolean isTokenExpired(String token) {
-        return extractClaims(token).getExpiration().before(new Date());
+        Instant now = Instant.now();
+        Instant expiration = Instant.ofEpochSecond(extractClaims(token).get("exp", Long.class));
+        return now.isAfter(expiration);
     }
 
     private Claims extractClaims(String token) {

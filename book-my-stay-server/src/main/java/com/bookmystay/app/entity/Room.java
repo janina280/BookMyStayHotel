@@ -19,6 +19,9 @@ public class Room {
     private BigDecimal roomPrice;
     private String roomPhotoUrl;
     private String roomDescription;
+    private Double averageRating = 0.0;
+    private Integer numberOfRatings = 0;
+
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Booking> bookings = new ArrayList<>();
@@ -32,6 +35,8 @@ public class Room {
                 ", roomPrice=" + roomPrice +
                 ", roomPhotoUrl='" + roomPhotoUrl + '\'' +
                 ", roomDescription='" + roomDescription + '\'' +
+                ", averageRating='" + averageRating + '\''+
+                ", numberOfRatings='"+numberOfRatings+'\''+
                 '}';
     }
 }

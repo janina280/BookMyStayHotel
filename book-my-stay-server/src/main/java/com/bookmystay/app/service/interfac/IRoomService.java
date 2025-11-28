@@ -23,5 +23,5 @@ public interface IRoomService {
     Response getAvailableRoomsByDataAndType(LocalDate checkInData, LocalDate checkOutData, String roomType);
 
     Response getAllAvailableRooms();
-
+    Response rateRoom(Long roomId, int rating);
 }

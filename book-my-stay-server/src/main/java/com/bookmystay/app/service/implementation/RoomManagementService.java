@@ -89,4 +89,30 @@ public class RoomManagementService {
         }
         return response;
     }
+
+    public Response rateRoom(Long roomId, int rating) {
+        Response response = new Response();
+        try {
+            if (rating < 1 || rating > 5) {
+                throw new OurException("Rating must be between 1 and 5");
+            }
+
+            Room room = roomRepository.findById(roomId)
+                    .orElseThrow(() -> new OurException("Room not found"));
+
+            double total = room.getAverageRating() * room.getNumberOfRatings();
+            room.setNumberOfRatings(room.getNumberOfRatings() + 1);
+            room.setAverageRating((total + rating) / room.getNumberOfRatings());
+
+            roomRepository.save(room);
+
+            response.setStatusCode(200);
+            response.setMessage(SUCCESS);
+        } catch (OurException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+        }
+        return response;
+    }
+
 }

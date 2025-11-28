@@ -106,4 +106,21 @@ class BookingQueryServiceTest {
         assertEquals("successful", response.getMessage());
         assertTrue(response.getBookingList().isEmpty());
     }
+
+    @Test
+    void getBookingHistory_success() {
+        Booking booking1 = new Booking();
+        booking1.setId(1L);
+        Booking booking2 = new Booking();
+        booking2.setId(2L);
+
+        when(bookingRepository.findByUserId(1L)).thenReturn(List.of(booking1, booking2));
+
+        Response response = bookingQueryService.getBookingHistoryByUser(1L);
+
+        assertEquals(200, response.getStatusCode());
+        assertNotNull(response.getBookingList());
+        assertEquals(2, response.getBookingList().size());
+    }
+
 }

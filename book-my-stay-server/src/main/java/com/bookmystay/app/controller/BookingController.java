@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/bookings")
 public class BookingController {
@@ -47,4 +49,19 @@ public class BookingController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
+    @PutMapping("/booking/update/{id}")
+    public ResponseEntity<Response> updateBooking(
+            @PathVariable Long id,
+            @RequestParam LocalDate newCheckIn,
+            @RequestParam LocalDate newCheckOut) {
+
+        Response response = bookingService.updateBooking(id, newCheckIn, newCheckOut);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @GetMapping("/history/{userId}")
+    public ResponseEntity<Response> getBookingHistory(@PathVariable Long userId) {
+        Response response = bookingService.getBookingHistoryByUser(userId);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
 }

@@ -62,6 +62,22 @@ public class BookingQueryService {
         });
     }
 
+    public Response  getBookingHistoryByUser(Long userId) {
+        return handle(response -> {
+            List<Booking> booking= bookingRepository.findByUserId(userId);
+            if (booking.isEmpty()) {
+                response.setStatusCode(404);
+                response.setMessage("Nu există rezervări pentru acest user");
+            } else {
+                response.setBookingList(Utils.mapBookingListEntityToBookingDTO(booking));
+                response.setStatusCode(200);
+                response.setMessage(SUCCESS_MESSAGE);
+            }
+
+        });
+    }
+
+
     public Response getAllBookings() {
         return handle(response -> {
             List<Booking> bookings = bookingRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));

@@ -15,10 +15,10 @@ import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class BookingManagementServiceTest {
@@ -146,4 +146,78 @@ class BookingManagementServiceTest {
         assertEquals("Booking not found", response.getMessage());
         verify(bookingRepository, never()).delete(any());
     }
+
+
+    @Test
+    void updateBooking_success() {
+        room.setBookings(new ArrayList<>());
+        booking.setRoom(room);
+
+        when(bookingRepository.findById(1L)).thenReturn(Optional.of(booking));
+        when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
+
+        Response response = bookingService.updateBooking(
+                1L,
+                LocalDate.now().plusDays(1),
+                LocalDate.now().plusDays(3)
+        );
+
+        assertEquals(200, response.getStatusCode());
+        assertEquals("successful", response.getMessage());
+        verify(bookingRepository, times(1)).save(booking);
+    }
+
+
+    @Test
+    void updateBooking_roomUnavailable() {
+        Booking existingBooking = new Booking();
+        existingBooking.setId(2L);
+        existingBooking.setCheckInDate(LocalDate.now().plusDays(2));
+        existingBooking.setCheckOutDate(LocalDate.now().plusDays(4));
+
+        Booking bookingToUpdate = new Booking();
+        bookingToUpdate.setId(1L);
+        bookingToUpdate.setRoom(new Room());
+        bookingToUpdate.getRoom().setBookings(List.of(existingBooking));
+
+        when(bookingRepository.findById(1L)).thenReturn(Optional.of(bookingToUpdate));
+
+        Response response = bookingService.updateBooking(
+                1L,
+                LocalDate.now().plusDays(3),
+                LocalDate.now().plusDays(5)
+        );
+
+        assertEquals(404, response.getStatusCode());
+        assertTrue(response.getMessage().contains("Room is not available"));
+    }
+
+    @Test
+    void updateBooking_bookingNotFound() {
+        when(bookingRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Response response = bookingService.updateBooking(1L, LocalDate.now(), LocalDate.now().plusDays(1));
+
+        assertEquals(404, response.getStatusCode());
+        assertEquals("Booking not found", response.getMessage());
+    }
+
+    @Test
+    void updateBooking_invalidDates() {
+        when(bookingRepository.findById(1L)).thenReturn(Optional.of(booking));
+
+        booking.setRoom(room);
+
+        Response response = bookingService.updateBooking(
+                1L,
+                LocalDate.now().plusDays(5),
+                LocalDate.now().plusDays(3)
+        );
+
+        assertEquals(404, response.getStatusCode());
+        assertEquals("Check-out date must be after check-in date", response.getMessage());
+
+    }
+
+
 }

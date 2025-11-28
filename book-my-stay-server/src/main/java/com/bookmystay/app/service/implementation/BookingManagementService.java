@@ -11,6 +11,8 @@ import com.bookmystay.app.repository.UserRepository;
 import com.bookmystay.app.utils.Utils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 public class BookingManagementService {
 
@@ -117,4 +119,33 @@ public class BookingManagementService {
         booking.setUser(user);
         booking.setBookingConfirmationCode(Utils.generateRandomConfirmationCode(10));
     }
+
+    public Response updateBooking(Long bookingId, LocalDate newCheckIn, LocalDate newCheckOut) {
+        return handle(response -> {
+            Booking booking = getBookingOrThrow(bookingId);
+
+            if (newCheckOut.isBefore(newCheckIn)) {
+                throw new OurException("Check-out date must be after check-in date");
+            }
+
+            Room room = booking.getRoom();
+
+            boolean overlap = room.getBookings().stream()
+                    .filter(b -> !b.getId().equals(bookingId))
+                    .anyMatch(existing ->
+                            !newCheckOut.isBefore(existing.getCheckInDate()) &&
+                                    !newCheckIn.isAfter(existing.getCheckOutDate())
+                    );
+
+            if (overlap) {
+                throw new OurException("Room is not available for the new date range");
+            }
+
+            booking.setCheckInDate(newCheckIn);
+            booking.setCheckOutDate(newCheckOut);
+
+            bookingRepository.save(booking);
+        });
+    }
+
 }

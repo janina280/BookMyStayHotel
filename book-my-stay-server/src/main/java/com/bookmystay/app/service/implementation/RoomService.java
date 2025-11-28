@@ -59,4 +59,8 @@ public class RoomService implements IRoomService {
     public Response deleteRoom(Long roomId) {
         return managementService.deleteRoom(roomId);
     }
+    @Override
+    public Response rateRoom(Long roomId, int rating){
+        return managementService.rateRoom(roomId, rating);
+    }
 }

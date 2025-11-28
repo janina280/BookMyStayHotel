@@ -39,6 +39,7 @@ public class Booking {
     @JoinColumn(name = "room_id")
     private Room room;
 
+
     public void calculateTotalNumberOfGuest() {
         this.totalNumOfGuest = this.numOfAdults + this.numOfChildren;
     }

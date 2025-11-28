@@ -116,4 +116,31 @@ class RoomManagementServiceTest {
         assertEquals(404, response.getStatusCode());
         assertEquals("Room not found!", response.getMessage());
     }
+
+    @Test
+    void rateRoom_success() {
+        Room room = new Room();
+        room.setId(1L);
+
+        when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
+        when(roomRepository.save(any(Room.class))).thenReturn(room);
+
+        Response response = roomManagementService.rateRoom(1L, 5);
+
+        assertEquals(200, response.getStatusCode());
+        assertEquals("successful", response.getMessage());
+        verify(roomRepository, times(1)).save(room);
+    }
+
+    @Test
+    void rateRoom_roomNotFound() {
+        when(roomRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Response response = roomManagementService.rateRoom(1L, 5);
+
+        assertEquals(404, response.getStatusCode());
+        assertEquals("Room not found", response.getMessage());
+    }
+
+
 }

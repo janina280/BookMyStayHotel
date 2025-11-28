@@ -5,6 +5,8 @@ import com.bookmystay.app.entity.Booking;
 import com.bookmystay.app.service.interfac.IBookingService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 public class BookingService implements IBookingService {
 
@@ -36,7 +38,15 @@ public class BookingService implements IBookingService {
         public Response cancelBooking(Long bookingId) {
             return managementService.cancelBooking(bookingId);
         }
-    }
+
+         public Response updateBooking(Long bookingId, LocalDate newCheckIn, LocalDate newCheckOut) {
+              return managementService.updateBooking(bookingId, newCheckIn, newCheckOut);
+          }
+
+         public Response getBookingHistoryByUser(Long userId) {
+            return queryService.getBookingHistoryByUser(userId);
+          }
+}
 
 
 

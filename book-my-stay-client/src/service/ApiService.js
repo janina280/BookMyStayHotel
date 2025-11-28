@@ -163,4 +163,29 @@ export default class ApiService {
         const role = localStorage.getItem('role')
         return role === 'USER'
     }
+
+    static async updateBookingDates(bookingId, newCheckIn, newCheckOut) {
+        const result = await axios.put(
+            `${this.BASE_URL}/bookings/booking/update/${bookingId}?newCheckIn=${newCheckIn}&newCheckOut=${newCheckOut}`,
+            {},
+            {
+                headers: this.getHeader()
+            }
+        );
+        return result.data;
+    }
+
+    static async rateRoom(roomId, rating) {
+        const result = await axios.put(
+            `${this.BASE_URL}/rooms/room/${roomId}/rate?rating=${rating}`,
+            {},
+            {
+                headers: this.getHeader()
+            }
+        );
+        return result.data;
+    }
+
+
+
 }
