@@ -100,9 +100,15 @@ public class RoomManagementService {
             Room room = roomRepository.findById(roomId)
                     .orElseThrow(() -> new OurException("Room not found"));
 
-            double total = room.getAverageRating() * room.getNumberOfRatings();
-            room.setNumberOfRatings(room.getNumberOfRatings() + 1);
-            room.setAverageRating((total + rating) / room.getNumberOfRatings());
+            double oldAvg = room.getAverageRating() != null ? room.getAverageRating() : 0.0;
+            int oldCount = room.getNumberOfRatings() != null ? room.getNumberOfRatings() : 0;
+
+            double total = oldAvg * oldCount;
+            int newCount = oldCount + 1;
+            double newAvg = (total + rating) / newCount;
+
+            room.setNumberOfRatings(newCount);
+            room.setAverageRating(newAvg);
 
             roomRepository.save(room);
 
@@ -114,5 +120,6 @@ public class RoomManagementService {
         }
         return response;
     }
+
 
 }

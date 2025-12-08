@@ -16,6 +16,11 @@ const RoomResult = ({ roomSearchResults }) => {
                                 <h3>{room.roomType}</h3>
                                 <p>Price: ${room.roomPrice} / night</p>
                                 <p>Description: {room.roomDescription}</p>
+                                <p>
+                                    Average
+                                    Rating: {room.averageRating ? room.averageRating.toFixed(1) : 'Not rated yet'}
+                                    ({room.numberOfRatings || 0} ratings)
+                                </p>
                             </div>
 
                             <div className='book-now-div'>

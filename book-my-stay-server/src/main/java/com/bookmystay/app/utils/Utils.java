@@ -68,6 +68,8 @@ public class Utils {
         roomDTO.setRoomType(room.getRoomType());
         roomDTO.setRoomPrice(room.getRoomPrice());
         roomDTO.setRoomPhotoUrl(room.getRoomPhotoUrl());
+        roomDTO.setAverageRating(room.getAverageRating() != null ? room.getAverageRating() : 0.0);
+        roomDTO.setNumberOfRatings(room.getNumberOfRatings() != null ? room.getNumberOfRatings() : 0);
 
         return  roomDTO;
     }
@@ -80,6 +82,8 @@ public class Utils {
         roomDTO.setRoomType(room.getRoomType());
         roomDTO.setRoomPrice(room.getRoomPrice());
         roomDTO.setRoomPhotoUrl(room.getRoomPhotoUrl());
+        roomDTO.setAverageRating(room.getAverageRating() != null ? room.getAverageRating() : 0.0);
+        roomDTO.setNumberOfRatings(room.getNumberOfRatings() != null ? room.getNumberOfRatings() : 0);
 
         if (room.getBookings() != null) {
             roomDTO.setBookings(

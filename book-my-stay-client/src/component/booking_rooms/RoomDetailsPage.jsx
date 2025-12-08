@@ -139,6 +139,9 @@ const RoomDetailsPage = () => {
                 <h3>{roomType}</h3>
                 <p>Price: ${roomPrice} / night</p>
                 <p>{roomDescription}</p>
+                <p><strong>Rating:</strong> {roomDetails.averageRating?.toFixed(1)} ⭐</p>
+                <p><strong>Total Reviews:</strong> {roomDetails.numberOfRatings}</p>
+
             </div>
             {bookings && bookings.length > 0 && (
                 <div>
