@@ -3,7 +3,6 @@ package com.bookmystay.app.service.implementation;
 import com.bookmystay.app.dto.Response;
 import com.bookmystay.app.entity.Room;
 import com.bookmystay.app.repository.RoomRepository;
-import com.bookmystay.app.service.AwsS3Service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

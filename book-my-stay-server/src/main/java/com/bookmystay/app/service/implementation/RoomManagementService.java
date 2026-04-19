@@ -4,7 +4,7 @@ import com.bookmystay.app.dto.Response;
 import com.bookmystay.app.entity.Room;
 import com.bookmystay.app.exception.OurException;
 import com.bookmystay.app.repository.RoomRepository;
-import com.bookmystay.app.service.AwsS3Service;
+import com.bookmystay.app.service.CloudinaryService;
 import com.bookmystay.app.utils.Utils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,19 +15,19 @@ import java.math.BigDecimal;
 public class RoomManagementService {
 
     private final RoomRepository roomRepository;
-    private final AwsS3Service awsS3Service;
+    private final CloudinaryService cloudinaryService;
     private static final String SUCCESS = "successful";
     private static final String ROOM_NOT_FOUND = "Room not found!";
 
-    public RoomManagementService(RoomRepository roomRepository, AwsS3Service awsS3Service) {
+    public RoomManagementService(RoomRepository roomRepository, CloudinaryService cloudinaryService) {
         this.roomRepository = roomRepository;
-        this.awsS3Service = awsS3Service;
+        this.cloudinaryService=cloudinaryService;
     }
 
     public Response addNewRoom(MultipartFile photo, String roomType, BigDecimal roomPrice, String description) {
         Response response = new Response();
         try {
-            String imageUrl = awsS3Service.saveImageToS3(photo);
+            String imageUrl = cloudinaryService.saveImage(photo);
             Room room = new Room();
             room.setRoomDescription(description);
             room.setRoomType(roomType);
@@ -51,7 +51,7 @@ public class RoomManagementService {
             Room room = roomRepository.findById(roomId)
                     .orElseThrow(() -> new OurException(ROOM_NOT_FOUND));
 
-            String imageUrl = (photo != null && !photo.isEmpty()) ? awsS3Service.saveImageToS3(photo) : room.getRoomPhotoUrl();
+            String imageUrl = (photo != null && !photo.isEmpty()) ? cloudinaryService.saveImage(photo) : room.getRoomPhotoUrl();
 
             if (roomType != null) room.setRoomType(roomType);
             if (roomPrice != null) room.setRoomPrice(roomPrice);
